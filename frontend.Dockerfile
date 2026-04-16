@@ -5,7 +5,8 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install
 
-COPY . .
+COPY src ./src
+COPY index.html vite.config.ts tsconfig.json tailwind.config.js postcss.config.js ./
 
 EXPOSE 3000
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]

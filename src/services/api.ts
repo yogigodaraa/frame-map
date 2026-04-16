@@ -1,6 +1,9 @@
 import type { JobStatus, VisualSpecification } from '../types';
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
+// On Vercel, set VITE_API_URL to your deployed backend URL.
+// Locally it falls back to localhost:8000.
+// If left empty, API calls go to /api (for future Vercel proxy use).
+const BASE_URL = import.meta.env.VITE_API_URL ?? '';
 
 export async function submitJob(
   file: File,

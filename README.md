@@ -11,17 +11,25 @@ compatible with SpaceDraft's rendering engine.
 ## Quick Start
 
 ```bash
-# 1. Clone and configure
+# Frontend (Vercel / local)
+npm install
+npm run dev          # http://localhost:3000
+
+# Backend (Docker / Railway)
 cp .env.example .env
-# Edit .env with your AWS + Anthropic keys
-
-# 2. Run everything
-docker-compose up
-
-# API:      http://localhost:8000
-# Frontend: http://localhost:3000
-# Docs:     http://localhost:8000/docs
+docker-compose up    # http://localhost:8000
 ```
+
+## Deploy
+
+*Frontend → Vercel*
+- Connect repo, Vercel auto-detects Vite at root
+- Set `VITE_API_URL` env var to your backend URL
+- Update the `rewrites` destination in `vercel.json`
+
+*Backend → Railway / AWS ECS*
+- `docker build -f backend/Dockerfile -t procviz-api ./backend`
+- Set env vars from `.env.example`
 
 ## Architecture
 
