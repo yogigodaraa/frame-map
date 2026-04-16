@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - AWS_REGION=${AWS_REGION:-ap-southeast-2}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - S3_BUCKET=${S3_BUCKET:-procviz-uploads}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - USE_SOLVER=${USE_SOLVER:-true}
+      - GENERATE_NARRATION=${GENERATE_NARRATION:-true}
+    volumes:
+      - ./backend:/app
+    command: uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+    depends_on:
+      - api
