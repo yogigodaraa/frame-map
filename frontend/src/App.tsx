@@ -143,8 +143,8 @@ export default function App() {
               <SpatialCanvas
                 spec={spec}
                 currentTime={currentTime}
-                width={Math.min(900, window.innerWidth - 320)}
-                height={Math.min(630, window.innerHeight - 200)}
+                width={Math.min(900, (typeof window !== 'undefined' ? window.innerWidth : 1280) - 320)}
+                height={Math.min(630, (typeof window !== 'undefined' ? window.innerHeight : 800) - 200)}
               />
             </div>
             <Timeline
