@@ -6,7 +6,7 @@ python-multipart==0.0.26
 
 # AI / LLM
 anthropic==0.40.0
-langgraph==0.2.55
+langgraph==1.0.10rc1
 langchain-core==1.2.28
 
 # AWS
