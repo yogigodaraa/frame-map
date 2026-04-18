@@ -1,56 +1,57 @@
-# frame-map / ProcViz
+# frame-map (ProcViz)
 
-> **Document → Interactive Spatial-Temporal Visual Plan**
+**Document → Interactive Spatial-Temporal Visual Plan**
 
-Upload an industrial SOP, work instruction, or operational order (PDF).
-Get back an animated storyboard showing who does what, where, and when —
-compatible with SpaceDraft's rendering engine.
+Upload an industrial SOP, work instruction, or operational order (PDF). Get back an animated storyboard showing who does what, where, and when.
 
----
+## What it does
 
-## Quick Start
+A 5-agent LangGraph pipeline that turns unstructured procedural text into a timeline of actors, actions, locations, and dependencies, rendered as an interactive canvas. Built for mining, healthcare, and defence procedural documents.
+
+Pipeline stages: document ingestion → procedural extraction → domain validation → spatial-temporal layout → visual specification. Includes human-in-the-loop review checkpoints for safety-critical domains and confidence-based routing with Claude fallbacks when solvers time out.
+
+## Tech stack
+
+**Frontend** (repo root)
+- Vite + React 18 + TypeScript
+- Konva / react-konva for canvas rendering
+- React Dropzone, Tailwind CSS
+
+**Backend** (`backend/`)
+- FastAPI (Python) + LangGraph
+- Claude API for semantic reasoning
+- AWS Textract for PDF parsing
+- OR-Tools for spatial constraint solving
+- FAISS for vector-based document validation
+
+## Getting started
+
+**Frontend**
 
 ```bash
-# Frontend (Vercel / local)
 npm install
-npm run dev          # http://localhost:3000
-
-# Backend (Docker / Railway)
-cp .env.example .env
-docker-compose up    # http://localhost:8000
+npm run dev            # http://localhost:3000
 ```
+
+**Backend**
+
+```bash
+cd backend
+cp .env.example .env   # set API keys
+docker-compose up      # http://localhost:8000
+```
+
+## API
+
+- `POST /api/jobs` — submit a document
+- `GET /api/jobs/{id}` — poll job status
+- `GET /api/jobs/{id}/spec` — fetch visual spec
 
 ## Deploy
 
-*Frontend → Vercel*
-- Connect repo, Vercel auto-detects Vite at root
-- Set `VITE_API_URL` env var to your backend URL
-- Update the `rewrites` destination in `vercel.json`
+- **Frontend → Vercel** — connect repo; Vite auto-detected at root. Set `VITE_API_URL`; update `rewrites` in `vercel.json`.
+- **Backend → Railway / AWS ECS** — Dockerfile + compose file included.
 
-*Backend → Railway / AWS ECS*
-- `docker build -f backend/Dockerfile -t procviz-api ./backend`
-- Set env vars from `.env.example`
+## Status
 
-## Architecture
-
-5-agent LangGraph pipeline:
-
-```
-Agent 1: Document Ingestion    → ParsedDocument
-Agent 2: Procedural Extraction → ProceduralKnowledgeGraph
-Agent 3: Domain Validation     → ValidationResult
-Agent 4: Spatial-Temporal      → SpatialTemporalLayout (neural-symbolic)
-Agent 5: Visual Specification  → VisualSpecification (SpaceDraft JSON)
-```
-
-See [`docs/PLAN.md`](docs/PLAN.md) for the full build plan and milestones.
-
-## Target Domains
-
-- ⛏️ Mining (Rio Tinto, BHP, Alcoa procedures)
-- 🏥 Healthcare (clinical pathways, emergency protocols)
-- 🛡️ Defence (CONOPS, operational orders, convoy plans)
-
-## Stack
-
-Python · LangGraph · Claude API · AWS Textract · OR-Tools · FastAPI · React · Konva · Tailwind
+Active WIP. Phase 1–4 milestones documented in `docs/PLAN.md` (proof-of-concept through production specialization). Output compatible with SpaceDraft's rendering engine.
