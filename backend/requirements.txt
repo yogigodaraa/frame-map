@@ -7,7 +7,7 @@ python-multipart==0.0.9
 # AI / LLM
 anthropic==0.40.0
 langgraph==0.2.55
-langchain-core==0.3.25
+langchain-core==1.2.28
 
 # AWS
 boto3==1.35.0
