@@ -1,149 +1,57 @@
-# frame-map · ProcViz
+# frame-map (ProcViz)
 
-**ProcViz** is a multi-agent AI pipeline that converts unstructured industrial
-procedural documents (SOPs, work instructions, operational orders) into
-interactive, spatially-grounded, time-sequenced visual storyboards — directly
-addressing the document-to-visual-plan gap identified at the intersection of
-document AI, spatial-temporal reasoning, and visual collaboration platforms.
+**Document → Interactive Spatial-Temporal Visual Plan**
 
----
+Upload an industrial SOP, work instruction, or operational order (PDF). Get back an animated storyboard showing who does what, where, and when.
 
-## Architecture
+## What it does
 
-```
-PDF / DOCX
-    │
-    ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│              LangGraph Supervisor Orchestrator                      │
-│                                                                     │
-│  Agent 1: Document Ingestion & Parsing                              │
-│    AWS Textract (OCR + layout)  →  ParsedDocument                  │
-│                                                                     │
-│  Agent 2: Procedural Knowledge Extraction                           │
-│    Claude via Bedrock  →  ProceduralKnowledgeGraph                  │
-│    (steps, actors, spatial refs, temporal constraints)              │
-│                                                                     │
-│  Agent 3: Domain Knowledge & Validation                             │
-│    RAG + rule-based  →  EnrichedKnowledgeGraph                      │
-│    (ISO 45001, WHO, STANAG cross-references, issue flagging)        │
-│                                                                     │
-│  Agent 4: Spatial-Temporal Layout                                   │
-│    Claude (high-level) + OR-Tools (constraint solver)               │
-│    →  SpatialTemporalLayout (frame-by-frame coordinates)            │
-│                                                                     │
-│  Agent 5: Visual Specification                                      │
-│    →  VisualSpecification (SpaceDraft-compatible JSON)              │
-└─────────────────────────────────────────────────────────────────────┘
-    │
-    ▼
-React + Konva canvas renderer
-(animated spatial plan with timeline playback)
-```
+A 5-agent LangGraph pipeline that turns unstructured procedural text into a timeline of actors, actions, locations, and dependencies, rendered as an interactive canvas. Built for mining, healthcare, and defence procedural documents.
 
-### Target verticals
-| Domain | Example document | Visual output |
-|---|---|---|
-| ⛏️ Mining | Mine shutdown SOP (BHP/Rio Tinto) | Animated site map with equipment movements & exclusion zones |
-| 🏥 Healthcare | Clinical pathway / emergency drill | Hospital floor plan with patient flow & staff positioning |
-| 🎖️ Defence | CONOPS / convoy order | Digital sand table briefing with phase-by-phase animation |
+Pipeline stages: document ingestion → procedural extraction → domain validation → spatial-temporal layout → visual specification. Includes human-in-the-loop review checkpoints for safety-critical domains and confidence-based routing with Claude fallbacks when solvers time out.
 
----
+## Tech stack
 
-## Repository structure
+**Frontend** (repo root)
+- Vite + React 18 + TypeScript
+- Konva / react-konva for canvas rendering
+- React Dropzone, Tailwind CSS
 
-```
-frame-map/
-├── backend/
-│   ├── procviz/
-│   │   ├── agents/
-│   │   │   ├── ingestion.py       # Agent 1 — AWS Textract + stub fallback
-│   │   │   ├── extraction.py      # Agent 2 — Claude / heuristic extraction
-│   │   │   ├── validation.py      # Agent 3 — domain rules + RAG enrichment
-│   │   │   ├── layout.py          # Agent 4 — OR-Tools constraint solver
-│   │   │   └── visual_spec.py     # Agent 5 — SpaceDraft-compatible JSON
-│   │   ├── schemas/
-│   │   │   └── __init__.py        # All Pydantic data models
-│   │   ├── orchestrator.py        # LangGraph supervisor graph
-│   │   └── main.py                # FastAPI REST API
-│   ├── tests/
-│   │   ├── test_schemas.py
-│   │   ├── test_agents.py
-│   │   ├── test_pipeline.py
-│   │   └── test_api.py
-│   ├── requirements.txt
-│   └── pyproject.toml
-└── frontend/
-    └── src/
-        ├── api/procviz.ts         # REST client
-        ├── components/
-        │   ├── App.tsx            # Root component
-        │   ├── UploadPanel.tsx    # Document upload + domain selector
-        │   └── CanvasRenderer.tsx # Konva canvas + timeline animation
-        └── types/index.ts         # TypeScript mirrors of Pydantic schemas
-```
+**Backend** (`backend/`)
+- FastAPI (Python) + LangGraph
+- Claude API for semantic reasoning
+- AWS Textract for PDF parsing
+- OR-Tools for spatial constraint solving
+- FAISS for vector-based document validation
 
----
+## Getting started
 
-## Quick start
-
-### Backend
+**Frontend**
 
 ```bash
-cd backend
-pip install -r requirements.txt
-
-# Run in stub mode (no AWS credentials required)
-PROCVIZ_STUB_MODE=true uvicorn procviz.main:app --reload
-
-# Run with real AWS Textract + Bedrock
-AWS_REGION=us-east-1 uvicorn procviz.main:app --reload
-```
-
-### Frontend
-
-```bash
-cd frontend
 npm install
-REACT_APP_API_URL=http://localhost:8000 npm start
+npm run dev            # http://localhost:3000
 ```
 
-### Tests
+**Backend**
 
 ```bash
 cd backend
-PROCVIZ_STUB_MODE=true python -m pytest tests/ -v
+cp .env.example .env   # set API keys
+docker-compose up      # http://localhost:8000
 ```
 
----
+## API
 
-## Environment variables
+- `POST /api/jobs` — submit a document
+- `GET /api/jobs/{id}` — poll job status
+- `GET /api/jobs/{id}/spec` — fetch visual spec
 
-| Variable | Default | Description |
-|---|---|---|
-| `PROCVIZ_STUB_MODE` | `false` | Skip AWS calls; use deterministic stubs |
-| `AWS_REGION` | `us-east-1` | AWS region for Textract + Bedrock |
-| `BEDROCK_MODEL_ID` | `anthropic.claude-3-5-sonnet-20241022-v2:0` | Claude model for extraction |
-| `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed origins |
-| `REACT_APP_API_URL` | `http://localhost:8000` | Backend base URL for frontend |
+## Deploy
 
----
+- **Frontend → Vercel** — connect repo; Vite auto-detected at root. Set `VITE_API_URL`; update `rewrites` in `vercel.json`.
+- **Backend → Railway / AWS ECS** — Dockerfile + compose file included.
 
-## Key design decisions
+## Status
 
-* **Stub mode** — every agent degrades gracefully to deterministic stubs when
-  AWS credentials are absent, so the full pipeline can be exercised locally or
-  in CI without cloud access.
-
-* **Neural-symbolic spatial layout** — Agent 4 uses Claude for high-level
-  spatial reasoning and Google OR-Tools for geometric constraint enforcement
-  (no overlaps, minimum clearance zones), directly addressing the LLM spatial
-  reasoning limitations documented in SpatialBench (2025).
-
-* **Confidence-based routing** — the LangGraph supervisor conditionally routes
-  low-confidence extractions through a human-in-the-loop checkpoint before
-  proceeding to layout generation.
-
-* **SpaceDraft-compatible output** — the `VisualSpecification` JSON schema is
-  designed to feed directly into SpaceDraft's proprietary motion logic and
-  spatial pathing renderer, as well as the bundled React/Konva renderer.
+Active WIP. Phase 1–4 milestones documented in `docs/PLAN.md` (proof-of-concept through production specialization). Output compatible with SpaceDraft's rendering engine.
