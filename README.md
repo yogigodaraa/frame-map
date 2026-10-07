@@ -104,7 +104,7 @@ doesn't pause yet.
 - [ ] Fix the `frontend/` (v2) lockfile and React 19 / react-konva 18 mismatch
 - [ ] Real human-in-the-loop pause/resume for safety-critical domains
 - [ ] Persist pipeline results (replace the in-memory store)
-- [ ] Remove unused `faiss-cpu` / `sentence-transformers` from `requirements.txt`, or implement RAG validation with them
+- [x] Remove unused `faiss-cpu` / `sentence-transformers` from `requirements.txt`, or implement RAG validation with them
 
 ## License
 
