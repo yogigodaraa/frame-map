@@ -21,7 +21,7 @@ docling==2.13.0          # optional fallback
 
 # Vector store (for RAG knowledge base)
 faiss-cpu==1.9.0
-sentence-transformers==3.3.0
+sentence-transformers==6.1.0
 
 # Utilities
 python-dotenv==1.2.2
