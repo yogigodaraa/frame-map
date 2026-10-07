@@ -14,7 +14,6 @@ import uuid
 from anthropic import Anthropic
 
 from backend.models.schemas import (
-    Actor,
     ActorType,
     AnimationSequence,
     ConfidenceLevel,

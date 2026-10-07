@@ -20,7 +20,6 @@ from backend.models.schemas import (
     Actor,
     ActorType,
     ConditionalBranch,
-    ConfidenceLevel,
     DocumentDomain,
     ParsedDocument,
     ProceduralKnowledgeGraph,
@@ -28,7 +27,6 @@ from backend.models.schemas import (
     SpatialConstraint,
     SpatialReference,
     TemporalConstraint,
-    ConstraintType,
 )
 
 logger = logging.getLogger(__name__)

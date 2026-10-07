@@ -12,12 +12,9 @@ from __future__ import annotations
 import io
 import uuid
 import logging
-from pathlib import Path
 
 import boto3
-from botocore.exceptions import ClientError
 from anthropic import Anthropic
-from pydantic import ValidationError
 
 from backend.models.schemas import (
     DocumentBlock,

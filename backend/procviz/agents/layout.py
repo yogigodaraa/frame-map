@@ -27,7 +27,6 @@ from procviz.schemas import (
     LayoutFrame,
     MovementPath,
     PipelineState,
-    ProceduralStep,
     SpatialTemporalLayout,
     Waypoint,
 )
@@ -169,7 +168,6 @@ def _solve_layout(enriched: EnrichedKnowledgeGraph) -> Optional[SpatialTemporalL
     # For the initial PoC, we use OR-Tools only to check inter-entity distance
     # constraints (no overlaps, minimum clearance).  The coordinates themselves
     # are first proposed by the grid heuristic and then adjusted.
-    graph = enriched.graph
     layout = _build_stub_layout(enriched)
 
     # Enforce minimum clearance between actor and zone entities

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import os
-import pytest
 
 os.environ["PROCVIZ_STUB_MODE"] = "true"
 
