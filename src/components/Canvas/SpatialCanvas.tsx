@@ -11,7 +11,7 @@
  */
 import React, { useMemo } from 'react';
 import { Stage, Layer, Line, Circle, Text, Group, Rect } from 'react-konva';
-import type { VisualSpecification, Coordinate, AnimationSequence } from '../../types';
+import type { VisualSpecification, Coordinate } from '../../types';
 
 interface Props {
   spec: VisualSpecification;
@@ -19,9 +19,6 @@ interface Props {
   width?: number;
   height?: number;
 }
-
-const SCALE_X = (containerW: number, canvasW: number) => containerW / canvasW;
-const SCALE_Y = (containerH: number, canvasH: number) => containerH / canvasH;
 
 export const SpatialCanvas: React.FC<Props> = ({
   spec,
