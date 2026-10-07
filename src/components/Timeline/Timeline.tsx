@@ -2,7 +2,7 @@
  * Timeline — horizontal scrubber showing steps as coloured segments.
  * Controls currentTime for SpatialCanvas.
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import type { VisualSpecification } from '../../types';
 
 interface Props {

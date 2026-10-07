@@ -14,7 +14,6 @@ from __future__ import annotations
 import json
 import logging
 import math
-import time
 import uuid
 from typing import Any
 
@@ -25,7 +24,6 @@ from backend.models.schemas import (
     Frame,
     MovementPath,
     ProceduralKnowledgeGraph,
-    SpatialReference,
     SpatialTemporalLayout,
     ValidationResult,
     Waypoint,
@@ -254,7 +252,6 @@ Propose layout positions. Return JSON only.""",
             R = 60 * SCALE  # default zone radius in scaled units
 
             # Variables: center x, y for each zone
-            zone_ids = [z.zone_id for z in zones]
             xs = {z.zone_id: model.new_int_var(R, W - R, f"x_{z.zone_id}") for z in zones}
             ys = {z.zone_id: model.new_int_var(R, H - R, f"y_{z.zone_id}") for z in zones}
 

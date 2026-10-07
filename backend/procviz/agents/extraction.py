@@ -20,9 +20,7 @@ from typing import Any
 
 from procviz.schemas import (
     Actor,
-    ConfidenceLevel,
     DocumentDomain,
-    ParsedDocument,
     PipelineState,
     ProceduralKnowledgeGraph,
     ProceduralStep,

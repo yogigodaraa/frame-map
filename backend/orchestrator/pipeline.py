@@ -27,7 +27,6 @@ from backend.agents import (
     VisualSpecificationAgent,
 )
 from backend.models.schemas import (
-    ConfidenceLevel,
     DocumentDomain,
     PipelineState,
 )

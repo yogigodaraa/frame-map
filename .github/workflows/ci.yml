@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Check names: "backend / test" and "web / test". Keep job ids stable.
+  backend:
+    uses: yogigodaraa/.github/.github/workflows/python-ci.yml@main
+    with:
+      working-directory: backend
+      python-version: "3.12"
+
+  # The deployed Vite app at the repo root. frontend/ (CRA, v2) is not in CI yet; see issues.
+  web:
+    uses: yogigodaraa/.github/.github/workflows/node-ci.yml@main

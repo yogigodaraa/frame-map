@@ -11,22 +11,13 @@ from procviz.schemas import (
     DocumentBlock,
     DocumentDomain,
     EnrichedKnowledgeGraph,
-    Keyframe,
-    LayoutEntity,
-    LayoutFrame,
-    MovementPath,
     ParsedDocument,
     PipelineState,
     ProceduralKnowledgeGraph,
     ProceduralStep,
-    SpatialReference,
     SpatialTemporalLayout,
-    TemporalConstraint,
-    TemporalRelation,
     ValidationIssue,
-    VisualElement,
     VisualSpecification,
-    Waypoint,
 )
 
 
